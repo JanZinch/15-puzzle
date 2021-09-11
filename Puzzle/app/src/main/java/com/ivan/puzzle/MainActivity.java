@@ -13,7 +13,7 @@ import android.os.Bundle;
 public class MainActivity extends AppCompatActivity implements OnStartDragListener {
 
     private ItemTouchHelper _itemTouchHelper = null;
-    private final int _spanCount = 2;
+    private final int _spanCount = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

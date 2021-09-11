@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.core.view.MotionEventCompat;
@@ -19,21 +20,21 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
     public final OnStartDragListener _startDragListener;
 
 
-    private static final String[] STRINGS = new String[]{
-            "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"
+    private static final String[] _tiles = new String[]{
+           " ", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"
     };
 
     private final List<String> mItems = new ArrayList<>();
 
     public RecyclerListAdapter() {
-        mItems.addAll(Arrays.asList(STRINGS));
+        mItems.addAll(Arrays.asList(_tiles));
 
         _startDragListener = null;
     }
 
     public RecyclerListAdapter(OnStartDragListener startDragListener){
 
-        mItems.addAll(Arrays.asList(STRINGS));
+        mItems.addAll(Arrays.asList(_tiles));
         _startDragListener = startDragListener;
     }
 
@@ -50,7 +51,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
         holder.textView.setText(mItems.get(position));
 
-        holder.textView.setOnTouchListener(new View.OnTouchListener() {
+        holder.imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
@@ -86,13 +87,14 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
             TileTouchHelperViewHolder {
 
         public final TextView textView;
+        public final ImageView imageView;
 
         public TileViewHolder(View itemView) {
             super(itemView);
             //textView = (TextView) itemView;
 
             textView = (TextView) itemView.findViewById(R.id.number);
-
+            imageView = (ImageView) itemView.findViewById(R.id.tile_texture);
         }
 
         @Override
