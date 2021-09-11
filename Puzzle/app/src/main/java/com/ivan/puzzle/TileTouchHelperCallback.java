@@ -27,8 +27,12 @@ public class TileTouchHelperCallback extends ItemTouchHelper.Callback {
     @Override
     public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
 
-        final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-        final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+        //final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+        //final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+
+        int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+        int swipeFlags = 0;
+
         return makeMovementFlags(dragFlags, swipeFlags);
     }
 
