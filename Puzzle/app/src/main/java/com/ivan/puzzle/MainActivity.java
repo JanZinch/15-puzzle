@@ -9,7 +9,7 @@ import android.os.Bundle;
 
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnStartDragListener {
 
 
     private ItemTouchHelper _itemTouchHelper = null;
@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerListAdapter adapter = new RecyclerListAdapter();
+        RecyclerListAdapter adapter = new RecyclerListAdapter(this);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_list);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
@@ -29,5 +29,11 @@ public class MainActivity extends AppCompatActivity {
         _itemTouchHelper = new ItemTouchHelper(callback);
         _itemTouchHelper.attachToRecyclerView(recyclerView);
 
+    }
+
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+
+        _itemTouchHelper.startDrag(viewHolder);
     }
 }

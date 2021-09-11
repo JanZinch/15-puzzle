@@ -2,10 +2,12 @@ package com.ivan.puzzle;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.core.view.MotionEventCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -13,6 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapter.TileViewHolder> implements TileTouchHelperAdapter {
+
+    public final OnStartDragListener _startDragListener;
 
 
     private static final String[] STRINGS = new String[]{
@@ -23,7 +27,16 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
     public RecyclerListAdapter() {
         mItems.addAll(Arrays.asList(STRINGS));
+
+        _startDragListener = null;
     }
+
+    public RecyclerListAdapter(OnStartDragListener startDragListener){
+
+        mItems.addAll(Arrays.asList(STRINGS));
+        _startDragListener = startDragListener;
+    }
+
 
     @Override
     public TileViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -34,7 +47,20 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
     @Override
     public void onBindViewHolder(final TileViewHolder holder, int position) {
+
         holder.textView.setText(mItems.get(position));
+
+        holder.textView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                    _startDragListener.onStartDrag(holder);
+                }
+                return false;
+            }
+        });
+
+
     }
 
     @Override
@@ -63,7 +89,10 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
         public TileViewHolder(View itemView) {
             super(itemView);
-            textView = (TextView) itemView;
+            //textView = (TextView) itemView;
+
+            textView = (TextView) itemView.findViewById(R.id.number);
+
         }
 
         @Override
