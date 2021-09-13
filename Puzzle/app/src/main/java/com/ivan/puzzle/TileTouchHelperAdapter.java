@@ -5,6 +5,6 @@ public interface TileTouchHelperAdapter {
     public void OnTileMove(int fromPosition, int toPosition);
     public void OnTileDismiss(int position);
 
-    public boolean isEmptyTileNeighbour(int position);
+    public int GetPotentialMovingDirection(int position);
 
 }

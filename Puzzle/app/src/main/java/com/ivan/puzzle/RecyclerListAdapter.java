@@ -11,11 +11,13 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.view.MotionEventCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapter.TileViewHolder> implements TileTouchHelperAdapter {
 
@@ -24,9 +26,34 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
     private static final String EMPTY_TILE = " ";
 
-    private static final String[] _tiles = new String[]{
+    private static final String[] _tilesResult = new String[]{
            EMPTY_TILE, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"
     };
+
+    private static final List<String[]> _tilesSource = new ArrayList<String[]>();
+
+
+    private String[] LoadLevel(){
+
+        _tilesSource.add(new String[] {"3", "4", "7", "2",
+                "9", "1", "6", "15",
+                "5", "14", "10", "12",
+                "13", "11", "8", EMPTY_TILE});
+
+        _tilesSource.add(new String[] {"6", "1", "3", "15",
+                "2", "13", "12", "8",
+                "5", "10", "4", "11",
+                "14", "9", "7", EMPTY_TILE});
+
+        _tilesSource.add(new String[] {"4", "15", "1", "12",
+                "3", "6", "13", "9",
+                "5", "10", "7", "8",
+                "2", "14", "11", EMPTY_TILE});
+
+
+        int levelIndex = (int) (Math.random() * _tilesSource.size());
+        return _tilesSource.get(levelIndex);
+    }
 
     private final List<String> _tilesList = new ArrayList<>();
 
@@ -38,7 +65,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
     public RecyclerListAdapter(OnStartDragListener startDragListener){
 
-        _tilesList.addAll(Arrays.asList(_tiles));
+        _tilesList.addAll(Arrays.asList(LoadLevel()));
         _startDragListener = startDragListener;
     }
 
@@ -79,7 +106,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
     }
 
 
-    private boolean safeCompare(int position){
+    private boolean isEmptyTile(int position){
 
         if (position < 0 || position >= _tilesList.size()){
 
@@ -89,10 +116,13 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
     }
 
     @Override
-    public boolean isEmptyTileNeighbour(int position) {
+    public int GetPotentialMovingDirection(int position) {
 
-        return safeCompare(position - 1) || safeCompare(position + 1)
-                || safeCompare(position + 4) || safeCompare(position - 4);
+        if(isEmptyTile(position - 1)) return ItemTouchHelper.LEFT;
+        else if (isEmptyTile(position + 1)) return ItemTouchHelper.RIGHT;
+        else if (isEmptyTile(position - 4)) return ItemTouchHelper.UP;
+        else if (isEmptyTile(position + 4)) return ItemTouchHelper.DOWN;
+        else return 0;
     }
 
     @Override
@@ -109,24 +139,8 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
             _tilesList.set(toPosition, tmp);
             notifyDataSetChanged();
         }
-        else{
-
-            //notify();
-        }
-
-
-
-
-
-
-        //notifyItemChanged(fromPosition);
-        //notifyItemChanged(toPosition);
 
         //notifyItemMoved(fromPosition, toPosition);
-        //notifyItemMoved(toPosition, fromPosition);
-
-
-
     }
 
     @Override

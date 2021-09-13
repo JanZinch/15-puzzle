@@ -30,18 +30,15 @@ public class TileTouchHelperCallback extends ItemTouchHelper.Callback {
     @Override
     public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
 
-        //final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-        //final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
-
         try{
 
-            int dragFlags = 0;
-            final int swipeFlags = 0;
-
-            if (_adapter.isEmptyTileNeighbour(viewHolder.getAdapterPosition())){
+            /*if (_adapter.isEmptyTileNeighbour(viewHolder.getAdapterPosition())){
 
                 dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
-            }
+            }*/
+
+            int dragFlags = _adapter.GetPotentialMovingDirection(viewHolder.getAdapterPosition());
+            final int swipeFlags = 0;
 
             return makeMovementFlags(dragFlags, swipeFlags);
         }
