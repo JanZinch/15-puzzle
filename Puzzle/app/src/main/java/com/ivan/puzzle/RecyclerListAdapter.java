@@ -1,6 +1,7 @@
 package com.ivan.puzzle;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.view.MotionEventCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,21 +22,23 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
     public final OnStartDragListener _startDragListener;
 
 
+    private static final String EMPTY_TILE = " ";
+
     private static final String[] _tiles = new String[]{
-           " ", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"
+           EMPTY_TILE, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"
     };
 
-    private final List<String> mItems = new ArrayList<>();
+    private final List<String> _tilesList = new ArrayList<>();
 
-    public RecyclerListAdapter() {
+    /*public RecyclerListAdapter() {
         mItems.addAll(Arrays.asList(_tiles));
 
         _startDragListener = null;
-    }
+    }*/
 
     public RecyclerListAdapter(OnStartDragListener startDragListener){
 
-        mItems.addAll(Arrays.asList(_tiles));
+        _tilesList.addAll(Arrays.asList(_tiles));
         _startDragListener = startDragListener;
     }
 
@@ -49,16 +53,20 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
     @Override
     public void onBindViewHolder(final TileViewHolder holder, int position) {
 
-        holder.textView.setText(mItems.get(position));
+        holder.textView.setText(_tilesList.get(position));
 
         holder.imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+
+
+
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
                     _startDragListener.onStartDrag(holder);
                 }
                 return false;
             }
+
         });
 
 
@@ -66,20 +74,64 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
     @Override
     public void OnTileDismiss(int position) {
-        mItems.remove(position);
+        _tilesList.remove(position);
         notifyItemRemoved(position);
+    }
+
+
+    private boolean safeCompare(int position){
+
+        if (position < 0 || position >= _tilesList.size()){
+
+            return false;
+        }
+        else return _tilesList.get(position).equals(EMPTY_TILE);
+    }
+
+    @Override
+    public boolean isEmptyTileNeighbour(int position) {
+
+        return safeCompare(position - 1) || safeCompare(position + 1)
+                || safeCompare(position + 4) || safeCompare(position - 4);
     }
 
     @Override
     public void OnTileMove(int fromPosition, int toPosition) {
-        String prev = mItems.remove(fromPosition);
-        mItems.add(toPosition > fromPosition ? toPosition - 1 : toPosition, prev);
-        notifyItemMoved(fromPosition, toPosition);
+
+        //String prev = _tilesList.remove(fromPosition);
+        //_tilesList.add(toPosition > fromPosition ? toPosition - 1 : toPosition, prev);
+        //notifyItemMoved(fromPosition, toPosition);
+
+        if(fromPosition == toPosition + 1 || fromPosition == toPosition - 1 || fromPosition == toPosition + 4 || fromPosition == toPosition - 4){
+
+            String tmp = _tilesList.get(fromPosition);
+            _tilesList.set(fromPosition, _tilesList.get(toPosition));
+            _tilesList.set(toPosition, tmp);
+            notifyDataSetChanged();
+        }
+        else{
+
+            //notify();
+        }
+
+
+
+
+
+
+        //notifyItemChanged(fromPosition);
+        //notifyItemChanged(toPosition);
+
+        //notifyItemMoved(fromPosition, toPosition);
+        //notifyItemMoved(toPosition, fromPosition);
+
+
+
     }
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        return _tilesList.size();
     }
 
 
@@ -97,14 +149,21 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
             imageView = (ImageView) itemView.findViewById(R.id.tile_texture);
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.P)
         @Override
         public void OnTileSelected() {
-            itemView.setBackgroundColor(Color.LTGRAY);
+
+            //itemView.setBackgroundColor(Color.LTGRAY);
+            itemView.setOutlineSpotShadowColor(Color.GREEN);
+
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.P)
         @Override
         public void OnTileClear() {
-            itemView.setBackgroundColor(0);
+
+            //itemView.setBackgroundColor(0);
+            itemView.setOutlineSpotShadowColor(Color.CYAN);
         }
     }
 

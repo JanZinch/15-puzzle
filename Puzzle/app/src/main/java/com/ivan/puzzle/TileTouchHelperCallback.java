@@ -24,20 +24,40 @@ public class TileTouchHelperCallback extends ItemTouchHelper.Callback {
         return true;
     }
 
+
+
+
     @Override
     public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
 
         //final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
         //final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
 
-        int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
-        int swipeFlags = 0;
+        try{
 
-        return makeMovementFlags(dragFlags, swipeFlags);
+            int dragFlags = 0;
+            final int swipeFlags = 0;
+
+            if (_adapter.isEmptyTileNeighbour(viewHolder.getAdapterPosition())){
+
+                dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+            }
+
+            return makeMovementFlags(dragFlags, swipeFlags);
+        }
+        catch (Exception ex){
+
+            Debug.Log(ex.getMessage());
+        }
+
+        return  0;
+
+
     }
 
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder source, RecyclerView.ViewHolder target) {
+
         _adapter.OnTileMove(source.getAdapterPosition(), target.getAdapterPosition());
         return true;
     }
