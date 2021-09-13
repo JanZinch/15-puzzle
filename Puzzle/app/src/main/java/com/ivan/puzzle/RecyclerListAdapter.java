@@ -1,5 +1,6 @@
 package com.ivan.puzzle;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -101,6 +102,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
         return itemViewHolder;
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(final TileViewHolder holder, int position) {
 
@@ -110,8 +112,16 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
         int index;
 
-        if(_tilesList.get(position).equals(EMPTY_TILE)) index = 15;
-        else index = Integer.parseInt(_tilesList.get(position)) - 1;
+        if(_tilesList.get(position).equals(EMPTY_TILE)){
+
+            index = 15;
+            holder.imageView.setBackgroundResource(R.color.cyan);
+        }
+        else {
+
+            index = Integer.parseInt(_tilesList.get(position)) - 1;
+            holder.imageView.setBackgroundResource(R.color.gray);
+        }
 
 
         holder.imageView.setImageResource(_images[index]);
