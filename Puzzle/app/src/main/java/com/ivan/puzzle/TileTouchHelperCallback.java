@@ -9,6 +9,8 @@ public class TileTouchHelperCallback extends ItemTouchHelper.Callback {
 
     private final TileTouchHelperAdapter _adapter;
 
+
+
     public TileTouchHelperCallback(TileTouchHelperAdapter adapter){
 
         _adapter = adapter;
@@ -57,6 +59,13 @@ public class TileTouchHelperCallback extends ItemTouchHelper.Callback {
 
         _adapter.OnTileMove(source.getAdapterPosition(), target.getAdapterPosition());
         return true;
+    }
+
+    @Override
+    public void onMoved(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
+                        int fromPos, @NonNull RecyclerView.ViewHolder target, int toPos, int x, int y) {
+
+        if (_adapter.IsLevelCompleted()) MainActivity.instance.SetLevelCompleted();
     }
 
     @Override

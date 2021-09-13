@@ -7,4 +7,6 @@ public interface TileTouchHelperAdapter {
 
     public int GetPotentialMovingDirection(int position);
 
+    public boolean IsLevelCompleted();
+
 }

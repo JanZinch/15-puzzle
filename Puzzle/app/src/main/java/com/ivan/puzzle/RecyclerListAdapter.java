@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Random;
 
@@ -27,25 +28,43 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
     private static final String EMPTY_TILE = " ";
 
     private static final String[] _tilesResult = new String[]{
-           EMPTY_TILE, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"
+
+            "1", "2", "3", "4",
+            "5", "6", "7", "8",
+            "9", "10", "11", "12",
+            "13", "14", "15", EMPTY_TILE
     };
 
     private static final List<String[]> _tilesSource = new ArrayList<String[]>();
 
+    private static int[] _images = new int[] { R.drawable.tile_01, R.drawable.tile_02, R.drawable.tile_03,R.drawable.tile_04,
+            R.drawable.tile_05,R.drawable.tile_06, R.drawable.tile_07,R.drawable.tile_08,
+            R.drawable.tile_09,R.drawable.tile_10, R.drawable.tile_11, R.drawable.tile_12,
+            R.drawable.tile_13,R.drawable.tile_14,R.drawable.tile_15,R.drawable.tile_empty};
 
     private String[] LoadLevel(){
 
-        _tilesSource.add(new String[] {"3", "4", "7", "2",
+        _tilesSource.add(new String[] {
+
+                "1", "2", "3", "4",
+                "5", "6", "7", "8",
+                "9", EMPTY_TILE, "11", "12",
+                "13", "10", "14", "15"});
+
+        _tilesSource.add(new String[] {
+                "3", "4", "7", "2",
                 "9", "1", "6", "15",
                 "5", "14", "10", "12",
                 "13", "11", "8", EMPTY_TILE});
 
-        _tilesSource.add(new String[] {"6", "1", "3", "15",
+        _tilesSource.add(new String[] {
+                "6", "1", "3", "15",
                 "2", "13", "12", "8",
                 "5", "10", "4", "11",
                 "14", "9", "7", EMPTY_TILE});
 
-        _tilesSource.add(new String[] {"4", "15", "1", "12",
+        _tilesSource.add(new String[] {
+                "4", "15", "1", "12",
                 "3", "6", "13", "9",
                 "5", "10", "7", "8",
                 "2", "14", "11", EMPTY_TILE});
@@ -69,6 +88,11 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
         _startDragListener = startDragListener;
     }
 
+    @Override
+    public boolean IsLevelCompleted() {
+
+        return  _tilesList.equals(Arrays.asList(_tilesResult));
+    }
 
     @Override
     public TileViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -82,11 +106,19 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
         holder.textView.setText(_tilesList.get(position));
 
+        //holder.imageView.
+
+        int index;
+
+        if(_tilesList.get(position).equals(EMPTY_TILE)) index = 15;
+        else index = Integer.parseInt(_tilesList.get(position)) - 1;
+
+
+        holder.imageView.setImageResource(_images[index]);
+
         holder.imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
-
 
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
                     _startDragListener.onStartDrag(holder);
@@ -95,8 +127,6 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
             }
 
         });
-
-
     }
 
     @Override
@@ -149,8 +179,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
     }
 
 
-    public static class TileViewHolder extends RecyclerView.ViewHolder implements
-            TileTouchHelperViewHolder {
+    public static class TileViewHolder extends RecyclerView.ViewHolder implements TileTouchHelperViewHolder {
 
         public final TextView textView;
         public final ImageView imageView;

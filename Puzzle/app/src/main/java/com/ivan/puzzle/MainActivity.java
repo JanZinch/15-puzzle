@@ -7,42 +7,79 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-
+import android.widget.Button;
+import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity implements OnStartDragListener {
 
+    public static MainActivity instance = null;
+
+    private  static final String COMPLETE = "Level completed!";
     private ItemTouchHelper _itemTouchHelper = null;
     private final int _spanCount = 4;
+
+    private TextView _gameStateLabel = null;
+
+    private RecyclerView _recyclerView = null;
+    private RecyclerView.LayoutManager _layoutManager = null;
+
+
+    private RecyclerListAdapter _adapter = null;
+    private ItemTouchHelper.Callback _callback = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        instance = this;
 
-        RecyclerListAdapter adapter = new RecyclerListAdapter(this);
+        LoadLevel();
+    }
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_list);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
 
+    protected void LoadLevel(){
+
+        _gameStateLabel = (TextView) findViewById(R.id.state_label);
+        _gameStateLabel.setText("");
+
+        _adapter = new RecyclerListAdapter(this);
+
+        _recyclerView = (RecyclerView) findViewById(R.id.recycler_list);
+        _recyclerView.setHasFixedSize(true);
+        _recyclerView.setAdapter(_adapter);
 
         //RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
+        _layoutManager = new GridLayoutManager(this, _spanCount);
+        _recyclerView.setLayoutManager(_layoutManager);
 
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, _spanCount);
-
-        recyclerView.setLayoutManager(layoutManager);
-
-        ItemTouchHelper.Callback callback = new TileTouchHelperCallback(adapter);
-        _itemTouchHelper = new ItemTouchHelper(callback);
-        _itemTouchHelper.attachToRecyclerView(recyclerView);
-
+        _callback = new TileTouchHelperCallback(_adapter);
+        _itemTouchHelper = new ItemTouchHelper(_callback);
+        _itemTouchHelper.attachToRecyclerView(_recyclerView);
     }
 
     @Override
-    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+    protected void onStart() {
+        super.onStart();
 
+        Button restartButton = (Button) findViewById(R.id.restart_button);
+        restartButton.setOnClickListener(v -> {
+
+            LoadLevel();
+            //onCreate(new Bundle());
+        });
+    }
+
+
+    public void SetLevelCompleted(){
+
+        _gameStateLabel.setText(COMPLETE);
+    }
+
+
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
 
         _itemTouchHelper.startDrag(viewHolder);
     }
